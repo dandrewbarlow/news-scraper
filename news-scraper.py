@@ -21,7 +21,7 @@ def scrape(url, regex, element):
     #create BeautifulSoup parsing object
     mySoup = BeautifulSoup( page.content, 'html.parser' )
 
-    print(mySoup.get_text())
+    # print(mySoup.get_text())
 
     #use regex to get headlines
     pageHeadlines = mySoup.find_all(element, class_ = re.compile(regex) )
@@ -60,15 +60,16 @@ def printHeadlines(name):
             print(website["headlines"])
 
 def main():
-    print(">IMPORTING")
+    print(">Importing")
     importSettings('websites.json')
-    print(">SCRAPING")
+    print(">Scraping")
     for website in websites:
         print(website["name"])
         website["headlines"] = scrape(website["url"], website["regex"], website["element"])
 
-    printHeadlines("CNN")
-    # print("EXPORTING")
-    # export('headlines.csv')
+    # printHeadlines("CNN")
+
+    print(">Exporting")
+    export('headlines.csv')
 
 main()

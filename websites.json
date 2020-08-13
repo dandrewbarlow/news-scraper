@@ -1,23 +1,23 @@
 [
   {
-  "name": "BBC",
-  "url" : "https://bbc.com/news",
-  "regex" : "heading",
-  "element" : "h3"
+    "name": "BBC",
+    "url" : "https://bbc.com/news",
+    "regex" : "heading",
+    "element" : "h3"
   },
 
   {
-  "name" : "WSJ",
-  "url" : "https://www.wsj.com/",
-  "regex" : "WSJTheme--headline",
-  "element" : "h3"
+    "name" : "WSJ",
+    "url" : "https://www.wsj.com/",
+    "regex" : "WSJTheme--headline",
+    "element" : "h3"
   },
 
   {
-  "name" : "NYT",
-  "url" : "https://nytimes.com",
-  "regex" : "",
-  "element" : "h2"
+    "name" : "NYT",
+    "url" : "https://nytimes.com",
+    "regex" : "",
+    "element" : "h2"
   },
 
   {
