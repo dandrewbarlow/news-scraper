@@ -23,7 +23,14 @@
   {
     "name": "CNN",
     "url" : "https://cnn.com",
+    "regex" : "(headline|banner-text)",
+    "element" : ["h2", "strong", "span"]
+  },
+
+  {
+    "name": "NBC",
+    "url" : "https://nbcnews.com",
     "regex" : "headline",
-    "element" : ""
+    "element" : ["span", "h3"]
   }
 ]
