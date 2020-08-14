@@ -1,9 +1,9 @@
 
 run:
-	python news-scraper.py
+	python3 news-scraper.py
 
 install:
-	pip install -r requirements.txt
+	pip3 install -r requirements.txt
 
 clean:
 	rm *.csv

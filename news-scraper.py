@@ -12,6 +12,8 @@ import json
 # a list of dicts containing news sites and the regex settings for getting their headlines
 # headlines will be added to the dicts when parsed
 websites = []
+
+# a dict of settings and their value. Currently only the output directory
 options = {}
 
 # the actual function to scrape a website
@@ -22,7 +24,7 @@ def scrape(website):
     # download page
     page = requests.get( website["url"] )
 
-    #c reate BeautifulSoup parsing object
+    # create BeautifulSoup parsing object
     mySoup = BeautifulSoup( page.content, 'html.parser' )
 
     # use regex to get headlines
@@ -31,13 +33,19 @@ def scrape(website):
     # create empty array of headlines
     headlines = []
 
+    success = False
     # go through matched headlines
     for content in pageHeadlines:
 
-        # exclude anything that includes the publication's name
-        if ( content.get_text().find( website["name"] ) == -1):
+        # exclude anything that includes the publication's name && the wsj error message
+        if ( ( content.get_text().find( website["name"] ) == -1 ) and
+        ( content.get_text().find( "We can’t find the page you're looking for") == -1) ):
             # add the headlines to the array
             headlines.append( content.get_text() )
+            success = True
+
+    if (success == False):
+        print("ERROR: Failed to scrape content (", website["name"], ")")
 
     # return said array
     return headlines
@@ -57,7 +65,7 @@ def importSettings(filename):
             websites.append(entry)
 
         options = data["options"]
-
+        
         file.close()
 
         return options
@@ -81,23 +89,26 @@ def export(filename):
         # go through the websites, and through each websites headlines
         for website in websites:
             for headline in website["headlines"]:
-                #write the website name and the headline
+                # write the website name and the headline
                 filewriter.writerow( [ website[ "name" ] ,  headline ] )
 
-#testing function
+# testing function
 def printHeadlines(name):
     for website in websites:
         if (website["name"] == name):
             print(website["headlines"])
 
+# main function
 def main():
-
+    # import the options
     options = importSettings('settings.json')
 
+    # scrape headlines from all the websites
     for website in websites:
         website["headlines"] = scrape(website)
 
-
+    # export headlines to the outfile
     export(options["outfile"])
 
+# grip it & rip it
 main()

@@ -34,6 +34,27 @@
       "url" : "https://nbcnews.com",
       "regex" : "headline",
       "element" : ["span", "h3"]
+    },
+
+    {
+      "name": "Yahoo",
+      "url" : "https://news.yahoo.com",
+      "regex" : "",
+      "element" : ["h2", "h3"]
+    },
+
+    {
+      "name": "NPR",
+      "url" : "https://npr.org",
+      "regex" : "title",
+      "element" : "h3"
+    },
+
+    {
+      "name": "Huffington Post",
+      "url" : "https://www.huffpost.com/",
+      "regex" : "headline",
+      "element" : ["a", "h2"]
     }
   ],
 
