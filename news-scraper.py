@@ -6,7 +6,7 @@ import re
 from bs4 import BeautifulSoup
 # creating csv files
 import csv
-# read json file for news settings
+# read json file for settings
 import json
 
 # a list of dicts containing news sites and the regex settings for getting their headlines
@@ -19,27 +19,19 @@ def scrape(website):
     # user feedback
     print("> Scraping", website["name"])
 
-    #download page
+    # download page
     page = requests.get( website["url"] )
 
-    #create BeautifulSoup parsing object
+    #c reate BeautifulSoup parsing object
     mySoup = BeautifulSoup( page.content, 'html.parser' )
 
-    '''
-    # cnn is a bitch to parse, this is for testing
-    if (website["url"] == "https://cnn.com"):
-        file = open("cnn.txt", "w")
-        file.write(mySoup.get_text())
-        file.close()
-    '''
-
-    #use regex to get headlines
+    # use regex to get headlines
     pageHeadlines = mySoup.find_all( website["element"], class_ = re.compile( website["regex"] ) )
 
-    #create empty array of headlines
+    # create empty array of headlines
     headlines = []
 
-    #go through matched headlines
+    # go through matched headlines
     for content in pageHeadlines:
 
         # exclude anything that includes the publication's name
@@ -47,7 +39,7 @@ def scrape(website):
             # add the headlines to the array
             headlines.append( content.get_text() )
 
-    #return said array
+    # return said array
     return headlines
 
 # import the scraping info from a json file into the websites variable/array
