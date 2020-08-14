@@ -12,11 +12,12 @@ import json
 # a list of dicts containing news sites and the regex settings for getting their headlines
 # headlines will be added to the dicts when parsed
 websites = []
+options = {}
 
 # the actual function to scrape a website
 def scrape(website):
     # user feedback
-    print(">Scraping")
+    print("> Scraping", website["name"])
 
     #download page
     page = requests.get( website["url"] )
@@ -52,20 +53,27 @@ def scrape(website):
 # import the scraping info from a json file into the websites variable/array
 def importSettings(filename):
     # tell the user whats goin on
-    print(">Importing")
+    print("> Importing")
 
     # open the .json file with the given filename
     with open(filename) as file:
         #decode the json data into the data variable
         data = json.load(file)
+
         #go through the data and populate the websites array with the info
-        for entry in data:
+        for entry in data["websites"]:
             websites.append(entry)
+
+        options = data["options"]
+
+        file.close()
+
+        return options
 
 # export scraped data into a csv using the given filename
 def export(filename):
     # User feedback
-    print(">Exporting")
+    print("> Exporting")
 
     # create a csvfile with given filename in write mode
     with open(filename, 'w') as csvfile:
@@ -92,14 +100,12 @@ def printHeadlines(name):
 
 def main():
 
-    importSettings('websites.json')
-
+    options = importSettings('settings.json')
 
     for website in websites:
-        print(website["name"])
         website["headlines"] = scrape(website)
 
 
-    export('headlines.csv')
+    export(options["outfile"])
 
 main()
