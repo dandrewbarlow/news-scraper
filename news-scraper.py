@@ -1,3 +1,17 @@
+'''
+Andrew Barlow
+Python Web Scraper
+8/13/20
+
+github.com/dandrewbarlow/news-scraper
+
+Made for grabbing news headlines, but also made modular enough that it could easily be repurposed
+Check out the README for high level info, but there shouldn't be any surprises in the code.
+Lots of comments, no weird tricks, this was also an excersise in trying to write good code,
+so I tried to make it pretty.
+'''
+
+
 #web requests
 import requests
 # regex
@@ -16,6 +30,7 @@ websites = []
 # a dict of settings and their value. Currently only the output directory
 options = {}
 
+
 # the actual function to scrape a website
 def scrape(website):
     # user feedback
@@ -27,48 +42,59 @@ def scrape(website):
     # create BeautifulSoup parsing object
     mySoup = BeautifulSoup( page.content, 'html.parser' )
 
-    # use regex to get headlines
-    pageHeadlines = mySoup.find_all( website["element"], class_ = re.compile( website["regex"] ) )
+    # use regex to get any matched content
+    matchedContent = mySoup.find_all( website["element"], class_ = re.compile( website["regex"] ) )
 
     # create empty array of headlines
     headlines = []
 
+    # marker to show whether or not any valid headlines were found
     success = False
+
     # go through matched headlines
-    for content in pageHeadlines:
+    for content in matchedContent:
 
         # exclude anything that includes the publication's name && the wsj error message
         if ( ( content.get_text().find( website["name"] ) == -1 ) and
         ( content.get_text().find( "We can’t find the page you're looking for") == -1) ):
+
             # add the headlines to the array
             headlines.append( content.get_text() )
             success = True
 
+    # notify user if no headlines are scraped
     if (success == False):
         print("ERROR: Failed to scrape content (", website["name"], ")")
 
     # return said array
     return headlines
 
+
 # import the scraping info from a json file into the websites variable/array
 def importSettings(filename):
+
     # tell the user whats goin on
     print("> Importing")
 
     # open the .json file with the given filename
     with open(filename) as file:
-        #decode the json data into the data variable
+
+        # decode the json data into the data variable
         data = json.load(file)
 
-        #go through the data and populate the websites array with the info
+        # go through the data and populate the websites array with the info
         for entry in data["websites"]:
             websites.append(entry)
 
+        # create a local options variable with the json settings
         options = data["options"]
-        
+
+        # close the json file
         file.close()
 
+        # return the options (they are put in the global options var in main)
         return options
+
 
 # export scraped data into a csv using the given filename
 def export(filename):
@@ -77,6 +103,7 @@ def export(filename):
 
     # create a csvfile with given filename in write mode
     with open(filename, 'w') as csvfile:
+
         # the csv writer and it's various settings
         filewriter = csv.writer(
         csvfile,
@@ -86,17 +113,29 @@ def export(filename):
 
         # Write the headings. For human readablity, removable for automation
         filewriter.writerow( [ 'Publication' , 'Headline' ] )
-        # go through the websites, and through each websites headlines
+
+        # go through the websites
         for website in websites:
+
+            # go through each website's headlines
             for headline in website["headlines"]:
+
                 # write the website name and the headline
                 filewriter.writerow( [ website[ "name" ] ,  headline ] )
+
+        # close the out file
+        csvfile.close()
+
+        # not super neccessary, but makes me feel good
+        return
+
 
 # testing function
 def printHeadlines(name):
     for website in websites:
         if (website["name"] == name):
             print(website["headlines"])
+
 
 # main function
 def main():
@@ -109,6 +148,7 @@ def main():
 
     # export headlines to the outfile
     export(options["outfile"])
+
 
 # grip it & rip it
 main()
