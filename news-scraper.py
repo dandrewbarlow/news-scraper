@@ -5,19 +5,21 @@ Python Web Scraper
 
 github.com/dandrewbarlow/news-scraper
 
-Made for grabbing news headlines, but also made modular enough that it could easily be repurposed
+Made for grabbing news headlines, but also made modular enough that it could easily be repurposed.
 Check out the README for high level info, but there shouldn't be any surprises in the code.
 Lots of comments, no weird tricks, this was also an excersise in trying to write good code,
 so I tried to make it pretty.
 '''
 
 
-#web requests
+# web requests
+# https://2.python-requests.org/en/master/
 import requests
-# regex
-import re
 # parser
+# https://www.crummy.com/software/BeautifulSoup/bs4/doc/
 from bs4 import BeautifulSoup
+# regular expressions (regex)
+import re
 # creating csv files
 import csv
 # read json file for settings
@@ -33,6 +35,7 @@ options = {}
 
 # the actual function to scrape a website
 def scrape(website):
+
     # user feedback
     print("> Scraping", website["name"])
 
@@ -98,6 +101,7 @@ def importSettings(filename):
 
 # export scraped data into a csv using the given filename
 def export(filename):
+
     # User feedback
     print("> Exporting")
 
@@ -132,8 +136,11 @@ def export(filename):
 
 # testing function
 def printHeadlines(name):
+
     for website in websites:
+
         if (website["name"] == name):
+
             print(website["headlines"])
 
 
