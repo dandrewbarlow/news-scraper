@@ -24,6 +24,8 @@ import re
 import csv
 # read json file for settings
 import json
+# so we can export the csv with a date to keep files unique
+from datetime import date
 
 # a list of dicts containing news sites and the regex settings for getting their headlines
 # headlines will be added to the dicts when parsed
@@ -106,7 +108,7 @@ def export(filename):
     print("> Exporting")
 
     # create a csvfile with given filename in write mode
-    with open(filename, 'w') as csvfile:
+    with open(filename + '-' + date.today().strftime("%m-%d-%Y") + '.csv', 'w') as csvfile:
 
         # the csv writer and it's various settings
         filewriter = csv.writer(

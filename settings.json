@@ -74,6 +74,6 @@
 
   "options" :
   {
-    "outfile" : "headlines.csv"
+    "outfile" : "results"
   }
 }
