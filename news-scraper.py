@@ -137,7 +137,7 @@ def export(options):
         os.mkdir("results")
     
     # create a csvfile with given filename and current date in write mode
-    with open("results/" + options["outfile"] + "-" + str( date.today() ) + ".csv", 'w') as csvfile:
+    with open("results/" + options["filename"] + "-" + str( date.today() ) + ".csv", 'w') as csvfile:
         # the csv writer and it's various settings
         filewriter = csv.writer(
         csvfile,
@@ -169,7 +169,7 @@ def main():
     
     if "-h" in sys.argv:
         help()
-        exit(code=1)
+        exit(code=0)
 
     if "-y" in sys.argv:
         confirmation = True
@@ -178,7 +178,7 @@ def main():
 
     if confirmation == False:
         console.print("[red]exiting[/red]")
-        exit(code=1)
+        exit(code=0)
 
     # import the options
     options = importSettings('settings.json')
@@ -187,7 +187,7 @@ def main():
     for website in websites:
         website["headlines"] = scrape(website)
 
-    # export headlines to the outfile
+    # export headlines to the output file
     export(options)
 
 
