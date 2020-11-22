@@ -4,6 +4,7 @@
 # https://github.com/dandrewbarlow/news-scraper
 # A python program to scrape news sites and practice my python skills on
 
+
 # LIBRARIES ========================================================
 #web requests
 import requests
@@ -39,6 +40,7 @@ install()
 # A lot of functionality exists in this module, worth looking into
 # Newspaper3k
 
+
 # GLOBAL VARS ========================================================
 # a list of dicts containing news sites and the regex settings for getting their headlines
 # headlines will be added to the dicts when parsed
@@ -46,6 +48,7 @@ websites = []
 
 # a dict of settings and their value. Currently only the output directory
 options = {}
+
 
 # FUNCTIONS ========================================================
 def help():
@@ -56,6 +59,7 @@ def help():
     console.print("[bold yellow]options[/bold yellow]")
     console.print("[yellow]-h[/yellow] print help information (this text)")
     console.print("[yellow]-y[/yellow] bypass scraping confimation")
+
 
 # the actual function to scrape a website
 def scrape(website):
@@ -128,18 +132,12 @@ def export(options):
     # User feedback
     console.print("[purple]Exporting[/purple]")
 
-    try:
-        assert options["filetype"] == "csv"
-    except:
-        console.print("CSV is currently the only supported filetype")
-        console.print("[red]exiting[/red]")
-        exit(code=1)
-
+    # check if the output direcory exists and create it if not
     if "results" not in os.listdir():
         os.mkdir("results")
     
     # create a csvfile with given filename and current date in write mode
-    with open("results/" + options["outfile"] + "-" + str( date.today() ), 'w') as csvfile:
+    with open("results/" + options["outfile"] + "-" + str( date.today() ) + ".csv", 'w') as csvfile:
         # the csv writer and it's various settings
         filewriter = csv.writer(
         csvfile,
@@ -166,14 +164,6 @@ def export(options):
         return
 
 
-# testing function
-def printHeadlines(name):
-
-    for website in websites:
-
-        if (website["name"] == name):
-            console.print(website["headlines"])
-
 # MAIN ========================================================
 def main():
     
@@ -187,6 +177,7 @@ def main():
         confirmation = Confirm.ask("[blue underline]Proceed to scrape headlines?[/blue underline]")
 
     if confirmation == False:
+        console.print("[red]exiting[/red]")
         exit(code=1)
 
     # import the options

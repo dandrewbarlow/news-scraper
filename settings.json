@@ -74,7 +74,6 @@
 
   "options" :
   {
-    "outfile" : "headlines",
-    "filetype" : "csv"
+    "filename" : "headlines"
   }
 }

@@ -6,4 +6,4 @@ install:
 	pip3 install -r requirements.txt
 
 clean:
-	rm *.csv
+	rm results/*.csv
