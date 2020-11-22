@@ -60,6 +60,7 @@
 
   "options" :
   {
-    "outfile" : "headlines.csv"
+    "outfile" : "headlines",
+    "filetype" : "csv"
   }
 }

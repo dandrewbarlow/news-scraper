@@ -1,14 +1,43 @@
+#! /usr/local/bin/python3
+
+# Andrew Barlow
+# https://github.com/dandrewbarlow/news-scraper
+# A python program to scrape news sites and practice my python skills on
+
+# LIBRARIES ========================================================
 #web requests
 import requests
+
 # regex
 import re
+
 # parser
 from bs4 import BeautifulSoup
+
 # creating csv files
 import csv
+
+# Allow naming for current date
+from datetime import date
+
 # read json file for settings
 import json
 
+# for console arguments and general os stuff
+import sys
+import os
+
+# rich console output
+from rich.console import Console
+console = Console()
+from rich.prompt import *
+from rich.traceback import install
+install()
+
+# A lot of functionality exists in this module, worth looking into
+# Newspaper3k
+
+# GLOBAL VARS ========================================================
 # a list of dicts containing news sites and the regex settings for getting their headlines
 # headlines will be added to the dicts when parsed
 websites = []
@@ -16,10 +45,20 @@ websites = []
 # a dict of settings and their value. Currently only the output directory
 options = {}
 
+# FUNCTIONS ========================================================
+def help():
+    console.print("[bold purple]News Scraper[/bold purple] by [blue underline link=https://github.com/dandrewbarlow]Andrew Barlow[/blue underline link]")
+    console.print("[yellow]usage[/yellow] ./news-scraper.py \[options]")
+    console.print("-run with no arguments to use CLI")
+    console.print("-use settings.json to configure. The version in the repo at [blue underline link=https://github.com/dandrewbarlow/news-scraper]github.com/dandrewbarlow/news-scraper[/blue underline link] has been made by me with some common news sites, but you can change or add sites through this file, as well as setting the output file name")
+    console.print("[bold yellow]options[/bold yellow]")
+    console.print("[yellow]-h[/yellow] print help information (this text)")
+    console.print("[yellow]-y[/yellow] bypass scraping confimation")
+
 # the actual function to scrape a website
 def scrape(website):
     # user feedback
-    print("> Scraping", website["name"])
+    console.print("scraping [yellow]" + website["name"] + "[/yellow]")
 
     # download page
     page = requests.get( website["url"] )
@@ -45,7 +84,7 @@ def scrape(website):
             success = True
 
     if (success == False):
-        print("ERROR: Failed to scrape content (", website["name"], ")")
+        console.print("[bold red]ERROR[/bold red] Failed to scrape content: [bold yellow]" + website["name"] + "[/bold yellow]")
 
     # return said array
     return headlines
@@ -53,7 +92,7 @@ def scrape(website):
 # import the scraping info from a json file into the websites variable/array
 def importSettings(filename):
     # tell the user whats goin on
-    print("> Importing")
+    console.print("[purple]Importing settings[/purple]")
 
     # open the .json file with the given filename
     with open(filename) as file:
@@ -71,12 +110,22 @@ def importSettings(filename):
         return options
 
 # export scraped data into a csv using the given filename
-def export(filename):
+def export(options):
     # User feedback
-    print("> Exporting")
+    console.print("[purple]Exporting[/purple]")
 
-    # create a csvfile with given filename in write mode
-    with open(filename, 'w') as csvfile:
+    try:
+        assert options["filetype"] == "csv"
+    except:
+        console.print("CSV is currently the only supported filetype")
+        console.print("[red]exiting[/red]")
+        exit(code=1)
+
+    if "results" not in os.listdir():
+        os.mkdir("results")
+    
+    # create a csvfile with given filename and current date in write mode
+    with open("results/" + options["outfile"] + "-" + str( date.today() ), 'w') as csvfile:
         # the csv writer and it's various settings
         filewriter = csv.writer(
         csvfile,
@@ -96,10 +145,23 @@ def export(filename):
 def printHeadlines(name):
     for website in websites:
         if (website["name"] == name):
-            print(website["headlines"])
+            console.print(website["headlines"])
 
-# main function
+# MAIN ========================================================
 def main():
+    
+    if "-h" in sys.argv:
+        help()
+        exit(code=1)
+
+    if "-y" in sys.argv:
+        confirmation = True
+    else:
+        confirmation = Confirm.ask("[blue underline]Proceed to scrape headlines?[/blue underline]")
+
+    if confirmation == False:
+        exit(code=1)
+
     # import the options
     options = importSettings('settings.json')
 
@@ -108,7 +170,7 @@ def main():
         website["headlines"] = scrape(website)
 
     # export headlines to the outfile
-    export(options["outfile"])
+    export(options)
 
 # grip it & rip it
 main()
