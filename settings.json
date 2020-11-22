@@ -55,6 +55,20 @@
       "url" : "https://www.huffpost.com/",
       "regex" : "headline",
       "element" : ["a", "h2"]
+    },
+
+    {
+      "name": "Fox",
+      "url" : "https://www.foxnews.com/",
+      "regex" : "title",
+      "element" : "h2"
+    },
+
+    {
+      "name": "AP News",
+      "url" : "https://www.apnews.com/",
+      "regex" : "headline",
+      "element" : ["div", "h1", "a"]
     }
   ],
 
