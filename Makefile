@@ -1,6 +1,6 @@
 
 run:
-	python3 news-scraper.py
+	./news-scraper.py -y
 
 install:
 	pip3 install -r requirements.txt

@@ -33,9 +33,11 @@ import os
 # rich console output
 from rich.console import Console
 console = Console()
-from rich.prompt import *
+from rich.progress import track
+from rich.prompt import Confirm
 from rich.traceback import install
 install()
+
 
 # A lot of functionality exists in this module, worth looking into
 # Newspaper3k
@@ -63,9 +65,6 @@ def help():
 
 # the actual function to scrape a website
 def scrape(website):
-
-    # user feedback
-    console.print("scraping [yellow]" + website["name"] + "[/yellow]")
 
     # download page
     page = requests.get( website["url"] )
@@ -104,9 +103,6 @@ def scrape(website):
 # import the scraping info from a json file into the websites variable/array
 def importSettings(filename):
 
-    # tell the user whats goin on
-    console.print("[purple]Importing settings[/purple]")
-
     # open the .json file with the given filename
     with open(filename) as file:
 
@@ -124,11 +120,15 @@ def importSettings(filename):
         file.close()
 
         # return the options (they are put in the global options var in main)
+        # tell the user whats goin on
+        console.print()
+        console.print("[purple]settings imported successfully[/purple]")
         return options
 
 
 # export scraped data into a csv using the given filename
 def export(options):
+
     # User feedback
     console.print("[purple]Exporting[/purple]")
 
@@ -138,12 +138,14 @@ def export(options):
     
     # create a csvfile with given filename and current date in write mode
     with open("results/" + options["filename"] + "-" + str( date.today() ) + ".csv", 'w') as csvfile:
+
         # the csv writer and it's various settings
         filewriter = csv.writer(
-        csvfile,
-        delimiter=',',
-        quotechar='|',
-        quoting=csv.QUOTE_MINIMAL)
+            csvfile,
+            delimiter=',',
+            quotechar='|',
+            quoting=csv.QUOTE_MINIMAL
+        )
 
         # Write the headings. For human readablity, removable for automation
         filewriter.writerow( [ 'Publication' , 'Headline' ] )
@@ -167,10 +169,12 @@ def export(options):
 # MAIN ========================================================
 def main():
     
+    # help menu
     if "-h" in sys.argv:
         help()
         exit(code=0)
 
+    # confirm b4 scraping
     if "-y" in sys.argv:
         confirmation = True
     else:
@@ -183,8 +187,12 @@ def main():
     # import the options
     options = importSettings('settings.json')
 
+    myDesc = "[yellow]scraping[/yellow]"
     # scrape headlines from all the websites
-    for website in websites:
+    siteList = track(websites, console=console, description=myDesc, auto_refresh=True)
+
+    for website in siteList:
+        myDesc = "scraping [yellow]" + website['name'] + "[/yellow]"
         website["headlines"] = scrape(website)
 
     # export headlines to the output file
@@ -192,4 +200,8 @@ def main():
 
 
 # grip it & rip it
-main()
+try:
+    main()
+except KeyboardInterrupt:
+    console.print("exiting")
+    exit(code=0)
