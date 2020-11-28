@@ -51,6 +51,8 @@ websites = []
 # a dict of settings and their value. Currently only the output directory
 options = {}
 
+# reliably get parent dir (important if script called from different folder)
+parentDir = os.path.dirname( os.path.realpath(__file__) )
 
 # FUNCTIONS ========================================================
 def help():
@@ -133,11 +135,11 @@ def export(options):
     console.print("[purple]Exporting[/purple]")
 
     # check if the output direcory exists and create it if not
-    if "results" not in os.listdir():
-        os.mkdir("results")
+    if "results" not in os.listdir(parentDir):
+        os.mkdir(parentDir + "/" + "results")
     
     # create a csvfile with given filename and current date in write mode
-    with open("results/" + options["filename"] + "-" + str( date.today() ) + ".csv", 'w') as csvfile:
+    with open(parentDir + "/" + "results/" + options["filename"] + "-" + str( date.today() ) + ".csv", 'w') as csvfile:
 
         # the csv writer and it's various settings
         filewriter = csv.writer(
@@ -185,7 +187,7 @@ def main():
         exit(code=0)
 
     # import the options
-    options = importSettings('settings.json')
+    options = importSettings(parentDir + '/' + 'settings.json')
 
     myDesc = "[yellow]scraping[/yellow]"
     # scrape headlines from all the websites
